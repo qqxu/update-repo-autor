@@ -1,27 +1,26 @@
-/**
- * @description: 访问页面
- * @param {url} string
- * @return {Promise}
- */
+const OLD_EMAIL = "xxx@xxx.com"; // github上的老邮箱
+const CORRECT_NAME = "qqxu"; // 新的user
+const CORRECT_EMAIL = "qqxu10@126.com"; // 新邮箱
+
+// 访问 页面 
 const accessHtml = (url) => {
-    // url 的响应是html
     const superagent = require('superagent');
-    console.log('1');
+    
     return new Promise((resolve, reject) => {
     	superagent.get(url).retry(3).end((err, res) => {
-            
 	        if(err) {
-                console.log('2 err');
 	            reject(err)
 	        } else {
-                console.log('2 success');
 	        	resolve(res);
 	        }
 	    })
     });
 }
 
-
+/**
+ * 
+ * @return {*} [{ name: 'node-load-api', path: '/qqxu/node-load-api' }]
+ */
 const queryDom = (res) => {
     // 抓取页面信息
     const cheerio = require('cheerio');
@@ -51,9 +50,9 @@ const cloneRepo = (repoName, repoPath) => {
     && cd ${repoName}.git \
     &&
     git filter-branch --env-filter '
-    OLD_EMAIL="xuqiongqiong@lattebank.com"
-    CORRECT_NAME="qqxu"
-    CORRECT_EMAIL="qqxu10@126.com"
+    OLD_EMAIL=${OLD_EMAIL}
+    CORRECT_NAME=${CORRECT_NAME}
+    CORRECT_EMAIL=${CORRECT_EMAIL}
     if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
     then
         export GIT_COMMITTER_NAME="$CORRECT_NAME"
@@ -72,8 +71,7 @@ const cloneRepo = (repoName, repoPath) => {
 
 const main = async () => {
 	const githubHtml = await accessHtml('https://github.com/qqxu?tab=repositories');
-	const allRepository = queryDom(githubHtml);
-    
+    const allRepository = queryDom(githubHtml);
     allRepository.forEach(({name, path}) => {
         cloneRepo(name, path);
     })

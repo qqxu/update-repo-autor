@@ -1,2 +1,13 @@
-node_modules
+
+# file
 yarn.lock
+package-lock.json
+
+# directory
+node_modules
+activity.git
+blog.git
+bulletin.git
+css3.git
+
+
